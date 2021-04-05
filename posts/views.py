@@ -54,7 +54,7 @@ def profile(request, username):
 
 def post_view(request, username, post_id):
     user = get_object_or_404(User, username=username)
-    post = get_object_or_404(Post, id=post_id)
+    post = get_object_or_404(Post, author__username=username, id=post_id)
     count = Post.objects.filter(author=user).count
     return render(request, 'post.html',
             {'post': post, 'author': user, 'count': count})
@@ -62,7 +62,7 @@ def post_view(request, username, post_id):
 
 @login_required
 def post_edit(request, username, post_id):
-    post = get_object_or_404(Post, author__username=username, pk=post_id)
+    post = get_object_or_404(Post, author__username=username, id=post_id)
     if request.user != post.author:
         return redirect('posts:post_view',username=username)
     form = PostForm(request.POST or None, instance=post)
