@@ -19,14 +19,21 @@ def index(request):
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
+    # if len(post_list) > 10:
+    #     return render(request, "index.html", {"page": page
+    #                                           "paginator": paginator})
     return render(request, "index.html", {"page": page})
 
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    posts = group.posts.all()[:12]
-    return render(request, "group.html", {"group": group, "posts": posts})
-
+    # posts = group.posts.all()[:12]
+    posts = group.posts.all()
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    # return render(request, "group.html", {"group": group, "posts": posts})
+    return render(request, "group.html", {"group": group, "posts": posts, "page": page})
 
 @login_required
 def new_post(request):
@@ -44,29 +51,31 @@ def profile(request, username):
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'profile.html',
-                  {'username': username,
-                   'page': page,
-                   'paginator': paginator,
-                   'posts_amount': posts_amount,
-                   'post_list': post_list,
-                   })
+    context = {'username': username,
+                'page': page,
+                'paginator': paginator,
+                'posts_amount': posts_amount,
+                'post_list': post_list,
+                   }
+    print(context)
+    return render(request, 'profile.html', context)
 
 def post_view(request, username, post_id):
     user = get_object_or_404(User, username=username)
     post = get_object_or_404(Post, author__username=username, id=post_id)
     count = Post.objects.filter(author=user).count
-    return render(request, 'post.html',
-            {'post': post, 'author': user, 'count': count})
+    return render(request, 'post.html', {'post': post, 'author': user,
+                    'count': count})
 
 
 @login_required
 def post_edit(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, id=post_id)
     if request.user != post.author:
-        return redirect('posts:profile',username=username)
+        return redirect('posts:profile', username=username)
     form = PostForm(request.POST or None, instance=post)
     if form.is_valid():
         post.save()
-        return redirect('posts:profile',username=username)
+        return redirect('posts:post_view', username=username,
+                        post_id=post_id)
     return render(request, "new_post.html", {'form': form, 'post': post})
