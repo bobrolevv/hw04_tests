@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Посты пользователя{% endblock %}
-{% block header %}Посты пользователя{% endblock %}
+{% block title %}Post ID {{ post.id }}{% endblock %}
+{% block header %}Post ID {{ post.id }}{% endblock %}
 {% block content %}
 <main role="main" class="container">
     <div class="row">
@@ -9,11 +9,11 @@
                         <div class="card-body">
                                 <div class="h2">
                                     <!-- Имя автора -->
-                                    Лев Толстой
+                                    {{ author.get_full_name }}
                                 </div>
                                 <div class="h3 text-muted">
                                      <!-- username автора -->
-                                     @leo
+                                    {{ author }}
                                 </div>
                         </div>
                         <ul class="list-group list-group-flush">
@@ -51,7 +51,7 @@
                                                 <a class="btn btn-sm text-muted" href={% url 'posts:post_edit' post.author.username post.id %} role="button">Редактировать</a>
                                         </div>
                                         <!-- Дата публикации  -->
-                                        <small class="text-muted">{{ post.pub_date|date:"d M Y" }}</small>
+                                        <small class="text-muted">{{ post.pub_date|date:"d M Y" }} Post ID {{ post.id }}</small>
                                 </div>
                         </div>
                 </div>

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 
-from posts.models import Group
+from posts.models import Group, Post
 
 User = get_user_model()
 
@@ -10,28 +10,40 @@ class StaticURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        Group.objects.create(
+        cls.user = User.objects.create_user(username='Vasya')
+        cls.group = Group.objects.create(
             title="Тестовая группа",
             slug="test_slug",
             description="Описание",
         )
+        cls.post = Post.objects.create(
+            text='test text',
+            group=cls.group,
+            author=cls.user
+        )
+
 
     def setUp(self):
         self.guest_client = Client()
-        self.user = User.objects.create_user(username='Vasya')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        # self.post = Post.objects.create(
+        #     text='test text',
+        #     # group=self.group,
+        #     author=self.user)
 
     def test_urls_status_code_200(self):
         """Проверка доступности страниц tested_urls любому пользователю"""
         tested_urls = ['/',
                        '/group/test_slug/',
                        '/auth/signup/',
+                       '/Vasya/',
+                       '/Vasya/1/edit',
                        ]
         for url in tested_urls:
             with self.subTest(url=url):
                 response = self.guest_client.get(url)
-                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.status_code, 200, url)
 
     def test_urls_status_code_200_authorized(self):
         """Проверка доступности страниц tested_urls авторизованному пользователю"""

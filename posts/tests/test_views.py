@@ -70,7 +70,7 @@ class PostsPagesTests(TestCase):
     def test_index_page_shows_correct_context(self):
         """Шаблон <index> сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse('posts:index'))
-        first_object = response.context['posts1'][0]
+        first_object = response.context['page'][0]
         task_text_0 = first_object.text
         task_group_0 = first_object.group
         task_author_0 = first_object.author
