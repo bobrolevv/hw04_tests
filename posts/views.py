@@ -8,12 +8,6 @@ from .forms import PostForm
 from .models import Post, Group, User
 
 
-# class SignUp(CreateView):
-#     form_class = CreationForm
-#     success_url = reverse_lazy("signup")
-#     template_name = "signup.html"
-
-
 def index(request):
     post_list = Post.objects.all()
     paginator = Paginator(post_list, 10)
@@ -33,7 +27,9 @@ def group_posts(request, slug):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     # return render(request, "group.html", {"group": group, "posts": posts})
-    return render(request, "group.html", {"group": group, "posts": posts, "page": page})
+    return render(request, "group.html", {"group": group, "posts": posts,
+                                          "page": page})
+
 
 @login_required
 def new_post(request):
@@ -45,6 +41,7 @@ def new_post(request):
         return redirect('posts:index')
     return render(request, "new_post.html", {'form': form})
 
+
 def profile(request, username):
     post_list = Post.objects.filter(author__username=username)
     posts_amount = post_list.count()
@@ -52,20 +49,21 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {'username': username,
-                'page': page,
-                'paginator': paginator,
-                'posts_amount': posts_amount,
-                'post_list': post_list,
-                   }
+               'page': page,
+               'paginator': paginator,
+               'posts_amount': posts_amount,
+               'post_list': post_list,
+               }
     print(context)
     return render(request, 'profile.html', context)
+
 
 def post_view(request, username, post_id):
     user = get_object_or_404(User, username=username)
     post = get_object_or_404(Post, author__username=username, id=post_id)
     count = Post.objects.filter(author=user).count
     return render(request, 'post.html', {'post': post, 'author': user,
-                    'count': count})
+                                         'count': count})
 
 
 @login_required
