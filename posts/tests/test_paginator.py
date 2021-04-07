@@ -13,9 +13,9 @@ class PaginatorViewsTest(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='Anton')
         cls.group = Group.objects.create(
-                title='Название Группы',
-                slug='test_slug',
-                description='Описание',)
+            title='Название Группы',
+            slug='test_slug',
+            description='Описание',)
 
         for i in range(1, 13):
             Post.objects.create(
