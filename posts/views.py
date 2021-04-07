@@ -7,7 +7,6 @@ from django.core.paginator import Paginator
 from .forms import PostForm
 from .models import Post, Group, User
 
-# User = get_user_model()
 
 def index(request):
     post_list = Post.objects.all()
