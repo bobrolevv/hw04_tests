@@ -27,7 +27,6 @@ class Group(models.Model):
     def __str__(self):
         return f'{self.title}'
 
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)[:100]
@@ -57,7 +56,7 @@ class Post(models.Model):
         blank=True,
         null=True,
         related_name='posts',
-        help_text = 'Выберите группу'
+        help_text='Выберите группу'
     )
 
     class Meta:
