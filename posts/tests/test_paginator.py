@@ -16,12 +16,12 @@ class PaginatorViewsTest(TestCase):
                 title='Название Группы',
                 slug='test_slug',
                 description='Описание',)
+
         for i in range(1, 13):
             Post.objects.create(
                 text=f'Тестовый текст {i}',
                 group=cls.group,
-                author=cls.user,
-                )
+                author=cls.user,)
 
     def test_first_page_containse_ten_records(self):
         response = self.client.get(reverse('posts:index'))
