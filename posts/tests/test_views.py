@@ -58,7 +58,8 @@ class PostsPagesTests(TestCase):
 
     def test_group_page_shows_correct_context(self):
         """Шаблон <group> сформирован с правильным контекстом."""
-        response = self.authorized_client.get(reverse('posts:group', kwargs={'slug': 'test_slug'}))
+        response = self.authorized_client.get(
+            reverse('posts:group', kwargs={'slug': 'test_slug'}))
         first_object = response.context['group']
         task_title_0 = first_object.title
         task_slug_0 = first_object.slug

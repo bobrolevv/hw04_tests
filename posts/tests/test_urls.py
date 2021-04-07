@@ -66,7 +66,7 @@ class StaticURLTests(TestCase):
                 self.assertEqual(response.status_code, 200, url)
         # 2
         response = self.authorized_client2.get('/Vasya/1/edit/')
-        self.assertEqual(response.status_code, 302, url)
+        self.assertEqual(response.status_code, 302,)
 
     def test_task_list_url_redirect_anonymous_on_admin_login(self):
         """

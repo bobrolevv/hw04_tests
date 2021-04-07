@@ -17,7 +17,6 @@ class PostModelTest(TestCase):
             author=User.objects.create(username='vasya'),
         )
 
-
     def test_title_label(self):
         """verbose_name поля group.title совпадает с ожидаемым."""
         group = PostModelTest.group

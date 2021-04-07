@@ -8,7 +8,6 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ('text', 'group')
 
-    # Валидация поля slug
     def clean_slug(self):
         """Обрабатывает случай, если slug не уникален."""
         cleaned_data = super().clean()
@@ -16,7 +15,7 @@ class PostForm(forms.ModelForm):
         if not slug:
             title = cleaned_data['slug']
             slug = slugify(title)[:100]
-        if Task.objects.filter(slug=slug).exists():
+        if Post.objects.filter(slug=slug).exists():
             raise ValidationError(f'Адрес "{slug}" уже существует, '
                                   'придумайте уникальное значение')
         return slug
