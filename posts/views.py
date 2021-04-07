@@ -1,4 +1,3 @@
-# from django.views.generic import CreateView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
@@ -13,20 +12,15 @@ def index(request):
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    # if len(post_list) > 10:
-    #     return render(request, "index.html", {"page": page
-    #                                           "paginator": paginator})
     return render(request, "index.html", {"page": page})
 
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    # posts = group.posts.all()[:12]
     posts = group.posts.all()
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    # return render(request, "group.html", {"group": group, "posts": posts})
     return render(request, "group.html", {"group": group, "posts": posts,
                                           "page": page})
 
