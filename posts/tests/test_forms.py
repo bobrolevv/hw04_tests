@@ -34,4 +34,4 @@ class TaskCreateFormTests(TestCase):
             data=form_data,
             follow=True,
         )
-        self.assertEqual(Post.objects.count(), post_count+1)
+        self.assertEqual(Post.objects.count(), post_count + 1)

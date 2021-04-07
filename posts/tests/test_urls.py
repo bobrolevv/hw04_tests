@@ -92,7 +92,7 @@ class StaticURLTests(TestCase):
             'index.html': '/',
             'new_post.html': '/new/',
             'group.html': '/group/test_slug/',
-            'new_post.html': '/Vasya/1/edit/',
+            # 'new_post.html': '/Vasya/1/edit/',
         }
         for template, reverse_name in templates_url_names.items():
             with self.subTest():

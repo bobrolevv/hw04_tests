@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'about', # статичные страници
+    'about',  # статичные страници
     'core',  # contextprocessor
     'users',  # наше приложение users**
     'posts',  # наше приложение posts**
