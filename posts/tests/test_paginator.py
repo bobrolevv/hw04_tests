@@ -21,7 +21,7 @@ class PaginatorViewsTest(TestCase):
                 text=f'Тестовый текст {i}',
                 group=cls.group,
                 author=cls.user,
-            )
+                )
 
     def test_first_page_containse_ten_records(self):
         response = self.client.get(reverse('posts:index'))
