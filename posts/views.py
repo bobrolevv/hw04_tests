@@ -2,10 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
+# from django.contrib.auth import get_user_model
 
 from .forms import PostForm
 from .models import Post, Group, User
 
+# User = get_user_model()
 
 def index(request):
     post_list = Post.objects.all()
@@ -37,12 +39,13 @@ def new_post(request):
 
 
 def profile(request, username):
-    post_list = Post.objects.filter(author__username=username)
+    user = get_object_or_404(User, username=username)
+    post_list = Post.objects.filter(author=user)
     posts_amount = post_list.count()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    context = {'username': username,
+    context = {'username': user,
                'page': page,
                'paginator': paginator,
                'posts_amount': posts_amount,
