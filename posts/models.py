@@ -58,6 +58,7 @@ class Post(models.Model):
         related_name='posts',
         help_text='Выберите группу'
     )
+    image = models.ImageField(upload_to='posts/', blank=True, null=True)
 
     class Meta:
         ordering = ['-pub_date']

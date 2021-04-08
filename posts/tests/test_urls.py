@@ -52,6 +52,7 @@ class StaticURLTests(TestCase):
         1. Проверка доступности страниц tested_urls
         авторизованному пользователю
         2. Проверка доступности страницы редактирования не автору поста
+        3. Проверка, возвращает ли сервер код 404, если страница не найдена
         """
         # 1
         tested_urls = ['/',
@@ -67,6 +68,10 @@ class StaticURLTests(TestCase):
         # 2
         response = self.authorized_client2.get('/Vasya/1/edit/')
         self.assertEqual(response.status_code, 302,)
+        # 3
+        response = self.authorized_client2.get('/unknow_url/')
+        self.assertEqual(response.status_code, 404, )
+
 
     def test_task_list_url_redirect_anonymous_on_admin_login(self):
         """

@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-# from django.contrib.auth import get_user_model
 
 from .forms import PostForm
 from .models import Post, Group, User
@@ -28,7 +27,7 @@ def group_posts(request, slug):
 
 @login_required
 def new_post(request):
-    form = PostForm(request.POST or None)
+    form = PostForm(request.POST or None, files=request.FILES or None,)
     if form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
@@ -50,7 +49,6 @@ def profile(request, username):
                'posts_amount': posts_amount,
                'post_list': post_list,
                }
-    print(context)
     return render(request, 'profile.html', context)
 
 
@@ -67,9 +65,26 @@ def post_edit(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, id=post_id)
     if request.user != post.author:
         return redirect('posts:profile', username=username)
-    form = PostForm(request.POST or None, instance=post)
+    form = PostForm(request.POST or None,
+                    files=request.FILES or None,
+                    instance=post)
     if form.is_valid():
         post.save()
         return redirect('posts:post_view', username=username,
                         post_id=post_id)
     return render(request, "new_post.html", {'form': form, 'post': post})
+
+
+def page_not_found(request, exception): # noqa
+    print('=======404=======')
+    return render(
+        request,
+        "misc/404.html",
+        {"path": request.path},
+        status=404
+    )
+
+
+def server_error(request):
+    print('=======500=======')
+    return render(request, "misc/500.html", status=500)
