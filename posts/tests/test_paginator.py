@@ -17,7 +17,7 @@ class PaginatorViewsTest(TestCase):
             slug='test_slug',
             description='Описание',)
 
-        for i in range(1, 13):
+        for i in range(0, 13):
             Post.objects.create(
                 text=f'Тестовый текст {i}',
                 group=cls.group,
@@ -28,5 +28,5 @@ class PaginatorViewsTest(TestCase):
         self.assertEqual(len(response.context.get('page').object_list), 10)
 
     def test_second_page_containse_three_records(self):
-        response = self.client.get(reverse('index') + '?page=2')
+        response = self.client.get(reverse('posts:index') + '?page=2')
         self.assertEqual(len(response.context.get('page').object_list), 3)
