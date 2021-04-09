@@ -4,7 +4,7 @@ from django.urls import reverse
 from posts.models import Post, Group, User
 
 
-class TaskCreateFormTests(TestCase):
+class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -16,7 +16,7 @@ class TaskCreateFormTests(TestCase):
         cls.post = Post.objects.create(
             text='test text',
             group=cls.group,
-            author=User.objects.create(username='vasya'),
+            author=User.objects.create(username='asya'),
         )
 
     def setUp(self):
@@ -24,11 +24,14 @@ class TaskCreateFormTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    def test_cant_create_existing_slug(self):
+    def test_post_create_in_db(self):
         post_count = Post.objects.count()
+        print(f'========={post_count}========')
         form_data = {
             'text': 'Текст из формы',
+            'group': self.group,
         }
+        print(f'======={form_data}=====')
         self.authorized_client.post(
             reverse('posts:new_post'),
             data=form_data,
