@@ -76,7 +76,6 @@ def post_edit(request, username, post_id):
 
 
 def page_not_found(request, exception): # noqa
-    print('=======404=======')
     return render(
         request,
         "misc/404.html",
@@ -86,5 +85,4 @@ def page_not_found(request, exception): # noqa
 
 
 def server_error(request):
-    print('=======500=======')
     return render(request, "misc/500.html", status=500)

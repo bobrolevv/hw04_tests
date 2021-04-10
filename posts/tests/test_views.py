@@ -22,6 +22,11 @@ class PostsPagesTests(TestCase):
             slug='test_slug',
             description='Описание',
         )
+        cls.group2 = Group.objects.create(
+            title='Название Группы 2',
+            slug='test_slug_2',
+            description='Описание 2',
+        )
 
         cls.post = Post.objects.create(
             text='Тестовый текст',
@@ -33,10 +38,10 @@ class PostsPagesTests(TestCase):
         """URL-адрес использует соответствующий шаблон."""
         templates_page_names = {
             'index.html': reverse('posts:index'),
-            'new_post.html': reverse('posts:new_post'),
             'group.html': (
-                reverse('posts:group', kwargs={'slug': 'test_slug'})
+                reverse('posts:group', kwargs={'slug': self.group.slug})
             ),
+            'new_post.html': reverse('posts:new_post'),
         }
         for template, reverse_name in templates_page_names.items():
             with self.subTest(reverse_name=reverse_name):
@@ -59,14 +64,14 @@ class PostsPagesTests(TestCase):
     def test_group_page_shows_correct_context(self):
         """Шаблон <group> сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:group', kwargs={'slug': 'test_slug'}))
+            reverse('posts:group', kwargs={'slug': self.group.slug}))
         first_object = response.context['group']
         task_title_0 = first_object.title
         task_slug_0 = first_object.slug
         task_description_0 = first_object.description
-        self.assertEqual(task_title_0, 'Название Группы')
-        self.assertEqual(task_slug_0, 'test_slug')
-        self.assertEqual(task_description_0, 'Описание')
+        self.assertEqual(task_title_0, self.group.title)
+        self.assertEqual(task_slug_0, self.group.slug)
+        self.assertEqual(task_description_0, self.group.description)
 
     def test_index_page_shows_correct_context(self):
         """Шаблон <index> сформирован с правильным контекстом."""
@@ -75,6 +80,14 @@ class PostsPagesTests(TestCase):
         task_text_0 = first_object.text
         task_group_0 = first_object.group
         task_author_0 = first_object.author
-        self.assertEqual(task_text_0, 'Тестовый текст')
+        self.assertEqual(task_text_0, self.post.text)
         self.assertEqual(task_group_0, self.group)
         self.assertEqual(task_author_0, self.user)
+
+    def test_new_post_shows_correct(self):
+        """
+        1. Новый пост отображается на главной странице
+        2. Новый пост отображается на странице выбранной группы
+        3. Новый пост не отображается на странице другой группы
+        """
+        pass
