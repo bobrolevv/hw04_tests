@@ -42,8 +42,7 @@ class PostCreateFormTests(TestCase):
         )
         form_data = {
             'text': 'Тестовый текст 123',
-            'group': self.group.id,  # обратить внимание на обращение
-                                     # к группе, без id не работает
+            'group': self.group.id,
             'image': uploaded,
         }
         response = self.authorized_client.post(
@@ -58,4 +57,5 @@ class PostCreateFormTests(TestCase):
     def test_edit_post(self):
         """Проверка возможности редактирования поста"""
         # как его написать? в теории нет такого задания и описания к нему
+        # если можно, дайте ссылку на какой либо материал по этому вопросу
         pass
