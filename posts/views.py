@@ -9,7 +9,7 @@ from .models import Post, Group, User
 
 
 def index(request):
-    post_list = Post.objects.all() # noqa
+    post_list = Post.objects.all()  # noqa
     paginator = Paginator(post_list, COUNT_POSTS_IN_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -39,7 +39,7 @@ def new_post(request):
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    post_list = Post.objects.filter(author=user) # noqa
+    post_list = Post.objects.filter(author=user)  # noqa
     posts_count = post_list.count()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
@@ -57,7 +57,7 @@ def profile(request, username):
 
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, id=post_id)
-    posts_count = Post.objects.filter(author=post.author).count # noqa
+    posts_count = Post.objects.filter(author=post.author).count  # noqa
     context = {'post': post,
                'author': post.author,
                'posts_count': posts_count
@@ -80,7 +80,7 @@ def post_edit(request, username, post_id):
     return render(request, 'new_post.html', {'form': form, 'post': post})
 
 
-def page_not_found(request, exception): # noqa
+def page_not_found(request, exception):  # noqa
     return render(
         request,
         'misc/404.html',

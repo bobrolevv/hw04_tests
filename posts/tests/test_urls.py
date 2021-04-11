@@ -10,14 +10,14 @@ class StaticURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = User.objects.create_user(username='Vasya')
-        cls.user2 = User.objects.create_user(username='Vova')
-        cls.group = Group.objects.create(
+        cls.user = User.objects.create_user(username='Vasya')  # noqa
+        cls.user2 = User.objects.create_user(username='Vova')  # noqa
+        cls.group = Group.objects.create(  # noqa
             title="Тестовая группа",
             slug="test_slug",
             description="Описание",
         )
-        cls.post = Post.objects.create(
+        cls.post = Post.objects.create(  # noqa
             text='test text',
             group=cls.group,
             author=cls.user
@@ -65,9 +65,8 @@ class StaticURLTests(TestCase):
         response = self.authorized_client2.get(f'/{self.user}/1/edit/')
         self.assertEqual(response.status_code, 302,)
         # 3
-        response = self.authorized_client2.get('/unknow_url/')
+        response = self.authorized_client2.get('/unknow_url/')  # noqa
         self.assertEqual(response.status_code, 404, )
-
 
     def test_task_list_url_redirect_anonymous_on_admin_login(self):
         """
