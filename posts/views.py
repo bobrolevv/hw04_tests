@@ -23,7 +23,7 @@ def group_posts(request, slug):
     page = paginator.get_page(page_number)
     return render(request, "group.html", {"group": group, "posts": posts,
                                           "page": page})
-
+    # return render(request, "group.html", {"group": group, "page": page})
 
 @login_required
 def new_post(request):

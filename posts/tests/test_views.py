@@ -66,12 +66,12 @@ class PostsPagesTests(TestCase):
         response = self.authorized_client.get(
             reverse('posts:group', kwargs={'slug': self.group.slug}))
         first_object = response.context['group']
-        task_title_0 = first_object.title
-        task_slug_0 = first_object.slug
-        task_description_0 = first_object.description
-        self.assertEqual(task_title_0, self.group.title)
-        self.assertEqual(task_slug_0, self.group.slug)
-        self.assertEqual(task_description_0, self.group.description)
+        group_title_0 = first_object.title
+        group_slug_0 = first_object.slug
+        group_description_0 = first_object.description
+        self.assertEqual(group_title_0, self.group.title)
+        self.assertEqual(group_slug_0, self.group.slug)
+        self.assertEqual(group_description_0, self.group.description)
 
     def test_index_page_shows_correct_context(self):
         """Шаблон <index> сформирован с правильным контекстом."""
@@ -88,9 +88,18 @@ class PostsPagesTests(TestCase):
         # Новый пост отображается на главной странице
         # Это мы косвенно проверили в тесте -
         # Шаблон <index> сформирован с правильным контекстом.
-
-        # Новый пост отображается на странице выбранной группы
-        # Это мы косвенно проверили в тесте -
-        # Шаблон <group> сформирован с правильным контекстом
-        """Новый пост не отображается на странице другой группы """
-        pass
+        """
+        1. Новый пост отображается на странице выбранной группы
+        2. Новый пост не отображается на странице другой группы
+        """
+        # 1
+        response = self.authorized_client.get(
+            reverse('posts:group', kwargs={'slug': self.group.slug}))
+        first_object = response.context['posts'][0]
+        post_text_0 = first_object.text
+        self.assertEqual(post_text_0, self.post.text)
+        # 2
+        response = self.authorized_client.get(
+            reverse('posts:group', kwargs={'slug': self.group2.slug}))
+        with self.assertRaises(IndexError, msg='list index out of range'):
+            response.context['posts'][0]
