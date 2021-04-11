@@ -9,13 +9,11 @@
             </div>
 
             <div class="col-md-9">
-                <!-- Начало блока с отдельным постом -->
+
                 {% for post in page %}
                     {% include 'includes/post_card.html' %}
                 {% endfor %}
-                <!-- Конец блока с отдельным постом -->
 
-                <!-- Здесь постраничная навигация паджинатора -->
                 {% include "paginator.html" %}
      </div>
     </div>
