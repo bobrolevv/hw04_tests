@@ -3,13 +3,14 @@ from django.core.paginator import Paginator
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 
+from yatube.settings import COUNT_POSTS_IN_PAGE
 from .forms import PostForm
 from .models import Post, Group, User
 
 
 def index(request):
     post_list = Post.objects.all()
-    paginator = Paginator(post_list, 10)
+    paginator = Paginator(post_list, COUNT_POSTS_IN_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, "index.html", {"page": page})
@@ -18,7 +19,7 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     posts = group.posts.all()
-    paginator = Paginator(posts, 10)
+    paginator = Paginator(posts, COUNT_POSTS_IN_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, "group.html", {"group": group, "posts": posts,
@@ -39,6 +40,8 @@ def new_post(request):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=user)
+    # Для выборок лучше использовать related_name
+    # - не разобрался как правильно это сделать :(
     posts_amount = post_list.count()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
@@ -53,11 +56,10 @@ def profile(request, username):
 
 
 def post_view(request, username, post_id):
-    user = get_object_or_404(User, username=username)
     post = get_object_or_404(Post, author__username=username, id=post_id)
-    count = Post.objects.filter(author=user).count
-    return render(request, 'post.html', {'post': post, 'author': user,
-                                         'count': count})
+    posts_count = Post.objects.filter(author=post.author).count
+    return render(request, 'post.html', {'post': post, 'author': post.author,
+                                         'posts_count': posts_count})
 
 
 @login_required

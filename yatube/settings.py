@@ -147,3 +147,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = "/auth/login/"
 LOGIN_REDIRECT_URL = "posts:index"
 LOGOUT_REDIRECT_URL = "posts:index"
+
+# количество постов на страницу
+COUNT_POSTS_IN_PAGE = 10
