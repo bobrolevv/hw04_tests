@@ -42,15 +42,17 @@ def profile(request, username):
     post_list = Post.objects.filter(author=user)
     # Для выборок лучше использовать related_name
     # - не разобрался как правильно это сделать :(
-    posts_amount = post_list.count()
+    posts_count = post_list.count()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    context = {'username': user,
+    prof_var = True
+    context = {'author': user,
                'page': page,
                'paginator': paginator,
-               'posts_amount': posts_amount,
+               'posts_count': posts_count,
                'post_list': post_list,
+               'prof_var': prof_var,
                }
     return render(request, 'profile.html', context)
 
@@ -58,8 +60,11 @@ def profile(request, username):
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, id=post_id)
     posts_count = Post.objects.filter(author=post.author).count
-    return render(request, 'post.html', {'post': post, 'author': post.author,
-                                         'posts_count': posts_count})
+    context = {'post': post,
+               'author': post.author,
+               'posts_count': posts_count
+               }
+    return render(request, 'post.html', context)
 
 
 @login_required

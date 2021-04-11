@@ -16,7 +16,6 @@
                   </div>
                 {% endfor %}
 
-<!--                <form method="post" action="{% url 'posts:new_post' %}">-->
                 <form method="post" enctype="multipart/form-data" action="{% if post %}{% url 'posts:post_edit' user.username post.id %}{% else %}{% url 'posts:new_post' %}{% endif %}">
 
                     {% csrf_token %}
