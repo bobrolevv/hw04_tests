@@ -22,8 +22,13 @@ def group_posts(request, slug):
     paginator = Paginator(posts, COUNT_POSTS_IN_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'group.html', {'group': group, 'posts': posts,
-                                          'page': page})
+    list_flag = True
+    context = {'group': group,
+               'posts': posts,
+               'page': page,
+               'list_flag': list_flag,
+               }
+    return render(request, 'group.html', context)
 
 
 @login_required
@@ -44,13 +49,13 @@ def profile(request, username):
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    prof_var = True
+    list_flag = True
     context = {'author': user,
                'page': page,
                'paginator': paginator,
                'posts_count': posts_count,
                'post_list': post_list,
-               'prof_var': prof_var,
+               'list_flag': list_flag,
                }
     return render(request, 'profile.html', context)
 

@@ -9,7 +9,7 @@
             <!-- Ссылка на страницу автора в атрибуте href; username автора в тексте ссылки -->
             <a href={% url 'posts:profile' post.author.username %}><strong class="d-block text-gray-dark">{{ post.author.get_full_name }}</strong></a>
             <!-- Текст поста -->
-            <p>{% if prof_var %}
+            <p>{% if list_flag %}
                     {{ post.text|truncatechars:50 }}
                 {% else %}
                     {{ post.text }}
