@@ -45,7 +45,7 @@ def new_post(request):
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     post_list = Post.objects.filter(author=user)  # noqa
-    posts_count = post_list.count()
+    posts_amount = post_list.count()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -53,7 +53,7 @@ def profile(request, username):
     context = {'author': user,
                'page': page,
                'paginator': paginator,
-               'posts_count': posts_count,
+               'posts_amount': posts_amount,
                'post_list': post_list,
                'list_flag': list_flag,
                }
@@ -62,10 +62,10 @@ def profile(request, username):
 
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, id=post_id)
-    posts_count = Post.objects.filter(author=post.author).count  # noqa
+    posts_amount = Post.objects.filter(author=post.author).count  # noqa
     context = {'post': post,
                'author': post.author,
-               'posts_count': posts_count
+               'posts_amount': posts_amount
                }
     return render(request, 'post.html', context)
 

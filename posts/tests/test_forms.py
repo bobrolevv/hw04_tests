@@ -1,7 +1,12 @@
+import shutil
+import tempfile
+
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
 
+from posts.forms import PostForm
 from posts.models import Post, Group, User
 
 
@@ -9,6 +14,9 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        settings.MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+        cls.form = PostForm
+
         cls.group = Group.objects.create(
             title='test text',
             description='Тестовый текст',
@@ -19,6 +27,11 @@ class PostCreateFormTests(TestCase):
             group=cls.group,
             author=User.objects.create(username='asya'),
         )
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
 
     def setUp(self):
         self.user = User.objects.create_user(username='Vasya')
@@ -41,7 +54,7 @@ class PostCreateFormTests(TestCase):
             content_type='image/gif'
         )
         form_data = {
-            'text': 'Тестовый текст 123',
+            'text': 'Тестовый текст 123 с картинкой',
             'group': self.group.id,
             'image': uploaded,
         }
@@ -52,7 +65,14 @@ class PostCreateFormTests(TestCase):
         )
         self.assertRedirects(response, reverse('posts:index'))
         self.assertEqual(Post.objects.count(), post_count + 1)
-        self.assertTrue(Post.objects.filter(text='Тестовый текст 123',))
+        self.assertTrue(
+            Post.objects.filter(
+                text=form_data['text'],
+                group=form_data['group'],
+                image='posts/small.gif',
+            ).exists()
+        )
+
 
     def test_edit_post(self):
         """Проверка возможности редактирования поста"""
