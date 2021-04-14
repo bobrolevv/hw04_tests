@@ -11,7 +11,7 @@ class PostCreateFormTests(TestCase):
         super().setUpClass()
 
     def setUp(self):
-        self.user = User.objects.create_user(username='Vasya')
+        self.user = User.objects.create_user(username='Vasya')  # noqa
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         self.group = Group.objects.create(
