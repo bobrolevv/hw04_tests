@@ -9,21 +9,31 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.group = Group.objects.create(
-            title='test text',
-            description='Тестовый текст',
-            slug='test_group'
-        )
-        cls.post = Post.objects.create(
-            text='test text',
-            group=cls.group,
-            author=User.objects.create(username='asya'),
-        )
+        # cls.group = Group.objects.create(
+        #     title='test text',
+        #     description='Тестовый текст',
+        #     slug='test_group'
+        # )
+        # cls.post = Post.objects.create(
+        #     text='test text',
+        #     group=cls.group,
+        #     author=User.objects.create(username='asya'),
+        # )
 
     def setUp(self):
         self.user = User.objects.create_user(username='Vasya')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        self.group = Group.objects.create(
+            title='test text',
+            description='Тестовый текст',
+            slug='test_group'
+        )
+        self.post = Post.objects.create(
+            text='test text',
+            group=self.group,
+            author=self.user,
+        )
 
     def test_create_post(self):
         """Валидная форма создает запись в Post."""
@@ -52,7 +62,8 @@ class PostCreateFormTests(TestCase):
         )
         self.assertRedirects(response, reverse('posts:index'))
         self.assertEqual(Post.objects.count(), post_count + 1)
-        self.assertTrue(Post.objects.filter(text='Тестовый текст 123',))
+        self.assertTrue(Post.objects.filter(text=form_data['text'],
+                                            group=self.group))
 
     def test_edit_post(self):
         """Проверка возможности редактирования поста"""
