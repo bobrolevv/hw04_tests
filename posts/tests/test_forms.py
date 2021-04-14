@@ -9,16 +9,6 @@ class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # cls.group = Group.objects.create(
-        #     title='test text',
-        #     description='Тестовый текст',
-        #     slug='test_group'
-        # )
-        # cls.post = Post.objects.create(
-        #     text='test text',
-        #     group=cls.group,
-        #     author=User.objects.create(username='asya'),
-        # )
 
     def setUp(self):
         self.user = User.objects.create_user(username='Vasya')
@@ -67,6 +57,25 @@ class PostCreateFormTests(TestCase):
 
     def test_edit_post(self):
         """Проверка возможности редактирования поста"""
-        # как его написать? в теории нет такого задания и описания к нему
-        # если можно, дайте ссылку на какой либо материал по этому вопросу
-        pass
+        form_data = {
+            'group': self.group.id,
+            'text': 'Тестовый текст, длиннее 15 символов',
+        }
+        response = self.authorized_client.post(
+            reverse('posts:post_edit', kwargs={'username': self.user,
+                                               'post_id': self.post.id}),
+            data=form_data,
+            follow=True
+        )
+        self.assertRedirects(response,
+                             reverse('posts:post_view',
+                                     kwargs={
+                                         'username': self.user,
+                                         'post_id': self.post.id}))
+        self.assertFalse(
+            Post.objects.filter(
+                author=self.user,
+                text=self.post.text,
+                group=self.group.id,
+            ).exists()
+        )
