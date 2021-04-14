@@ -97,6 +97,6 @@ def page_not_found(request, exception):  # noqa
 def server_error(request):
     return render(request, 'misc/500.html', status=500)
 
-def add_comment:
+def add_comment():
     pass
 
