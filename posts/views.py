@@ -1,3 +1,5 @@
+from itertools import count
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect
@@ -62,7 +64,7 @@ def profile(request, username):
 
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, id=post_id)
-    posts_amount = Post.objects.filter(author=post.author).count  # noqa
+    posts_amount = Post.objects.filter(author=post.author).count()  # noqa
     context = {'post': post,
                'author': post.author,
                'posts_amount': posts_amount
