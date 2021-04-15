@@ -64,8 +64,9 @@ class Comment(models.Model):
     post = models.ForeignKey(
         Post,
         verbose_name='Коментарий',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='comments',
+        null=True,
     )
     author = models.ForeignKey(
         User,
@@ -76,6 +77,7 @@ class Comment(models.Model):
     text = models.TextField(
         'Текст',
         help_text='Ваш коментарий',
+
     )
     created = models.DateTimeField(
         'Дата публикации',

@@ -98,5 +98,25 @@ def server_error(request):
     return render(request, 'misc/500.html', status=500)
 
 
-def add_comment():
-    pass
+
+@login_required(login_url="/auth/login/")
+def add_comment(request, user_name, post_id):
+    current_post = get_object_or_404(
+        Post, author__username=user_name,
+        id=post_id
+    )
+    form = CommentForm(request.POST or None)
+    if form.is_valid():
+        new_comment = form.save(commit=False)
+        new_comment.author = request.user
+        new_comment.post = current_post
+        new_comment.save()
+        context = {
+            "post": current_post,
+            "author": current_post.author,
+        }
+        return render(request, "post.html", context)
+
+    comments = Comment.objects.filter(post=current_post)
+    return render(request, "post.html",
+                  {"form": form, "comments": comments})
