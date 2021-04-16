@@ -4,8 +4,8 @@ from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 
 from yatube.settings import COUNT_POSTS_IN_PAGE
-from .forms import PostForm
-from .models import Post, Group, User
+from .forms import PostForm, CommentForm
+from .models import Post, Group, User, Comment
 
 
 def index(request):
@@ -100,25 +100,31 @@ def server_error(request):
 
 
 @login_required #(login_url="/auth/login/")
-def add_comment(request, user_name, post_id):
-    print(request, user_name, post_id)
-    # current_post = get_object_or_404(
-    #     # Post, author__username=user_name,
-    #     id=post_id
-    # )
-
-    # form = CommentForm(request.POST or None)
-    # if form.is_valid():
-    #     new_comment = form.save(commit=False)
-    #     new_comment.author = request.user
-    #     new_comment.post = current_post
-    #     new_comment.save()
-    #     context = {
-    #         "post": current_post,
-    #         "author": current_post.author,
-    #     }
-    #     return render(request, "post.html", context)
-    #
-    # comments = Comment.objects.filter(post=current_post)
-    # return render(request, "post.html",
-    #               {"form": form, "comments": comments})
+def add_comment(request, username, post_id):
+    post = get_object_or_404(Post, author__username=username, id=post_id)
+    posts_amount = Post.objects.filter(author=post.author).count()  # noqa
+    form = CommentForm(request.POST or None,
+                    instance=post)
+    print(f'=={form}==')
+    if form.is_valid():
+        print('======1======')
+        new_comment = form.save()
+        new_comment.author = request.user
+        new_comment.post = current_post
+        new_comment.save()
+        context = {
+            'post': post,
+            'author': post.author,
+        }
+        return render(request, 'post.html', context)
+    print('=====2=====')
+    comments = Comment.objects.filter(post=post)
+    print(f'=====3====={comments}')
+    context = {'form': form,
+               'comments': comments,
+               'post': post,
+               'author': post.author,
+               'posts_amount': posts_amount,
+               }
+    print(f'=====4====={context}')
+    return render(request, 'post.html', context)

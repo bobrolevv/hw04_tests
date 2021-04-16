@@ -3,13 +3,11 @@
 
 {% if user.is_authenticated %}
 <div class="card my-4">
-    <form method="post" action="{% url 'posts:add_comment' user_name=user.username post_id=post.id %}">
-<!--        action="{#{% url 'posts:add_comment' user_name=user.username post_id=post.id %}#}">-->
+    <form method="post" action="{% url 'posts:add_comment' user.username post.id %}">
         {% csrf_token %}
         <h5 class="card-header">Добавить комментарий:</h5>
         <div class="card-body">
             <div class="form-group">
-                {# {{ form.text|addclass:"form-control" }} #}
                 <p></p><textarea class="form-control" style="width:100%; height:100px;" placeholder="Оставьте свой коментарий здесь">
                     {{ form.text }}
                 </textarea></p>
