@@ -17,7 +17,6 @@ class Group(models.Model):
         help_text=('Укажите адрес для страницы группы. Используйте только '
                    'латиницу, цифры, дефисы и знаки подчёркивания'),
     )
-
     description = models.TextField(
         'Описание',
         help_text='Опишите группу',
@@ -77,7 +76,6 @@ class Comment(models.Model):
     text = models.TextField(
         'Текст',
         help_text='Ваш коментарий',
-
     )
     created = models.DateTimeField(
         'Дата публикации',
