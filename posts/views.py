@@ -63,9 +63,12 @@ def profile(request, username):
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, id=post_id)
     posts_amount = Post.objects.filter(author=post.author).count()  # noqa
+    form = CommentForm()
     context = {'post': post,
                'author': post.author,
-               'posts_amount': posts_amount
+               'posts_amount': posts_amount,
+               'comments': Comment.objects.filter(post=post),
+               'form': form,
                }
     return render(request, 'post.html', context)
 
@@ -101,30 +104,15 @@ def server_error(request):
 
 @login_required #(login_url="/auth/login/")
 def add_comment(request, username, post_id):
-    post = get_object_or_404(Post, author__username=username, id=post_id)
-    posts_amount = Post.objects.filter(author=post.author).count()  # noqa
-    form = CommentForm(request.POST or None,
-                    instance=post)
-    print(f'=={form}==')
+    user_post = get_object_or_404(Post, author__username=username, id=post_id)
+    form = CommentForm(request.POST or None, instance=None)
     if form.is_valid():
-        print('======1======')
-        new_comment = form.save()
-        new_comment.author = request.user
-        new_comment.post = current_post
-        new_comment.save()
-        context = {
-            'post': post,
-            'author': post.author,
-        }
-        return render(request, 'post.html', context)
-    print('=====2=====')
-    comments = Comment.objects.filter(post=post)
-    print(f'=====3====={comments}')
-    context = {'form': form,
-               'comments': comments,
-               'post': post,
-               'author': post.author,
-               'posts_amount': posts_amount,
-               }
-    print(f'=====4====={context}')
-    return render(request, 'post.html', context)
+        print(f'===0==')
+        comment = form.save(commit=False)
+        comment.post = user_post
+        comment.author = request.user
+        comment.save()
+        print(f'===2=={comment}=')
+    return redirect('posts:post_view',
+                    username=user_post.author.username,
+                    post_id=user_post.id)

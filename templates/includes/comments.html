@@ -8,9 +8,8 @@
         <h5 class="card-header">Добавить комментарий:</h5>
         <div class="card-body">
             <div class="form-group">
-                <p></p><textarea class="form-control" style="width:100%; height:100px;" placeholder="Оставьте свой коментарий здесь">
-                    {{ form.text }}
-                </textarea></p>
+                    {{ form.text|addclass:'form-control' }}
+                    {#{{ form.text }}#}
             </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
         </div>
@@ -23,11 +22,12 @@
 <div class="media card mb-4">
     <div class="media-body card-body">
         <h5 class="mt-0">
-            <a href="{% url 'profile' item.author.username %}"
+            <a href="{% url 'posts:profile' item.author.username %}"
                name="comment_{{ item.id }}">
                 {{ item.author.username }}
             </a>
         </h5>
+        <p>{{ item.created }}</p>
         <p>{{ item.text | linebreaksbr }}</p>
     </div>
 </div>
