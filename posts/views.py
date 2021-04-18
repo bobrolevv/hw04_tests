@@ -101,18 +101,15 @@ def server_error(request):
     return render(request, 'misc/500.html', status=500)
 
 
-
-@login_required #(login_url="/auth/login/")
+@login_required
 def add_comment(request, username, post_id):
     user_post = get_object_or_404(Post, author__username=username, id=post_id)
     form = CommentForm(request.POST or None, instance=None)
     if form.is_valid():
-        print(f'===0==')
         comment = form.save(commit=False)
         comment.post = user_post
         comment.author = request.user
         comment.save()
-        print(f'===2=={comment}=')
-    return redirect('posts:post_view',
-                    username=user_post.author.username,
-                    post_id=user_post.id)
+        return redirect('posts:post_view',
+                        username=user_post.author.username,
+                        post_id=user_post.id)
