@@ -149,3 +149,9 @@ LOGOUT_REDIRECT_URL = "posts:index"
 
 # количество постов на страницу
 COUNT_POSTS_IN_PAGE = 10
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}

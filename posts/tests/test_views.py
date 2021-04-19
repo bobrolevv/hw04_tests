@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.core.cache import caches
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -13,9 +14,12 @@ class PostsPagesTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.guest_client = Client()
+        cls.cache = caches['default']
         cls.user = User.objects.create_user(username='Anton')
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
+        cls.response_before = cls.authorized_client.get(
+            reverse('posts:index'))
 
         cls.group = Group.objects.create(
             title='Название Группы',
@@ -85,9 +89,6 @@ class PostsPagesTests(TestCase):
         self.assertEqual(task_author_0, self.user)
 
     def test_new_post_shows_correct(self):
-        # Новый пост отображается на главной странице
-        # Это мы косвенно проверили в тесте -
-        # Шаблон <index> сформирован с правильным контекстом.
         """
         1. Новый пост отображается на странице выбранной группы
         2. Новый пост не отображается на странице другой группы
@@ -103,3 +104,8 @@ class PostsPagesTests(TestCase):
             reverse('posts:group', kwargs={'slug': self.group2.slug}))
         with self.assertRaises(IndexError, msg='list index out of range'):
             response.context['posts'][0]
+
+    def test_caches(self):
+        """ Проверка работы кэша index"""
+        response_after = self.authorized_client.get(reverse("posts:index"))
+        self.assertNotEqual(self.response_before, response_after)

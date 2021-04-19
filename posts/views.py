@@ -2,12 +2,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
+from django.views.decorators.cache import cache_page
 
 from yatube.settings import COUNT_POSTS_IN_PAGE
 from .forms import PostForm, CommentForm
 from .models import Post, Group, User, Comment
 
 
+# @cache_page(60 * 15)
 def index(request):
     post_list = Post.objects.all()  # noqa
     paginator = Paginator(post_list, COUNT_POSTS_IN_PAGE)
@@ -22,13 +24,7 @@ def group_posts(request, slug):
     paginator = Paginator(posts, COUNT_POSTS_IN_PAGE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    list_flag = True
-    context = {'group': group,
-               'posts': posts,
-               'page': page,
-               'list_flag': list_flag,
-               }
-    return render(request, 'group.html', context)
+    return render(request, 'group.html', {'page': page})
 
 
 @login_required
@@ -113,3 +109,20 @@ def add_comment(request, username, post_id):
         return redirect('posts:post_view',
                         username=user_post.author.username,
                         post_id=user_post.id)
+
+@login_required
+def follow_index(request):
+    # информация о текущем пользователе доступна в переменной request.user
+    # ...
+    return render(request, "follow.html", {...})
+
+@login_required
+def profile_follow(request, username):
+    # ...
+    pass
+
+
+@login_required
+def profile_unfollow(request, username):
+    # ...
+    pass
