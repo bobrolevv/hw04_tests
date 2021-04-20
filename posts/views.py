@@ -113,8 +113,9 @@ def add_comment(request, username, post_id):
 @login_required
 def follow_index(request):
     # информация о текущем пользователе доступна в переменной request.user
-    # ...
-    return render(request, "follow.html", {...})
+    user = request.user
+    user_posts = Post.objects.filter()
+    return render(request, "follow.html", {'user_posts': user_posts})
 
 @login_required
 def profile_follow(request, username):
